@@ -1,0 +1,16 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "Battleship project for The Odin Project",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watchAll"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.0.0"
+  }
+}
