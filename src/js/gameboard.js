@@ -1,4 +1,4 @@
-const ship = require('./ship');
+const ship = require('./ship.js');
 class GameBoard {
     constructor() {
         this.board = Array(10).fill(null).map(() => Array(10).fill(null));
