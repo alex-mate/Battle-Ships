@@ -1,9 +1,9 @@
-const gameboard = require('./gameboard.js');
+const GameBoard = require("./gameboard.js");
 
 class Player {
     constructor(type) {
         this.type = type;
-        this.gameboard = new gameboard();
+        this.gameboard = new GameBoard();
     }
 }
 

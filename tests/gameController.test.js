@@ -57,6 +57,29 @@ test("player attacks the computer gameboard", () => {
     expect(game.computer.gameboard.ships[0].hits).toBe(1);
 });
 
+test("player attack reports the hit ship and whether it sank", () => {
+    const game = new GameController();
+
+    game.computer.gameboard.placeShip(1, [[0, 0]], "Patrol Boat");
+
+    expect(game.playerAttack(0, 0)).toEqual({
+        row: 0,
+        col: 0,
+        hit: true,
+        shipName: "Patrol Boat",
+        sunk: true,
+    });
+});
+
+test("winner returns the player after all computer ships sink", () => {
+    const game = new GameController();
+
+    game.computer.gameboard.placeShip(1, [[0, 0]], "Patrol Boat");
+    game.playerAttack(0, 0);
+
+    expect(game.winner()).toBe(game.player);
+});
+
 test("player cannot attack when it is computer's turn", () => {
     const game = GameController();
 
@@ -84,4 +107,37 @@ test("player attack only attacks the computer board", () => {
 
     expect(game.computer.gameboard.ships[0].hits).toBe(1);
     expect(game.player.gameboard.ships[0].hits).toBe(0);
+});
+test("invalid attacks and repeated attacks preserve the player's turn", () => {
+    const game = GameController();
+    expect(() => game.playerAttack(-1, 0)).toThrow("Attack must be within the board");
+    expect(game.currentPlayer).toBe(game.player);
+    game.playerAttack(0, 0);
+    game.computerAttack();
+    expect(() => game.playerAttack(0, 0)).toThrow("Coordinate already attacked");
+    expect(game.currentPlayer).toBe(game.player);
+});
+
+test("computer cannot retaliate after the winning shot", () => {
+    const game = GameController();
+    game.computer.gameboard.placeShip(1, [[0, 0]], "Patrol Boat");
+    game.playerAttack(0, 0);
+    expect(() => game.computerAttack()).toThrow("Battle is already over");
+    expect(game.player.gameboard.attacks).toHaveLength(0);
+    game.switchTurn();
+    expect(() => game.playerAttack(1, 1)).toThrow("Battle is already over");
+});
+
+test("computer selects each available square once, even with constant randomness", () => {
+    const game = GameController();
+    const random = jest.spyOn(Math, "random").mockReturnValue(0);
+    try {
+        for (let i = 0; i < 100; i++) {
+            game.playerAttack(Math.floor(i / 10), i % 10);
+            game.computerAttack();
+        }
+        expect(new Set(game.player.gameboard.attacks.map(String)).size).toBe(100);
+        game.switchTurn();
+        expect(() => game.computerAttack()).toThrow("No targets remaining");
+    } finally { random.mockRestore(); }
 });

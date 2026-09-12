@@ -1,11 +1,15 @@
 class Ship {
-    constructor(length) {   
+    constructor(length, name) {
+        if (!Number.isInteger(length) || length < 1 || length > 10) {
+            throw new Error("Ship length must be an integer between 1 and 10");
+        }
         this.length = length;
+        this.name = name;
         this.hits = 0;
     }
 
     hit() {
-        this.hits++;
+        if (!this.isSunk()) this.hits++;
     }
 
     isSunk() {

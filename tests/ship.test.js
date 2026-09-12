@@ -32,3 +32,14 @@ describe("Ship", () => {
     expect(ship.isSunk()).toBe(false);
 });
 });
+test.each([0, -1, 1.5, 11, NaN, "3"])("rejects invalid length %s", (length) => {
+    expect(() => new Ship(length)).toThrow();
+});
+
+test("hits cannot exceed the length of a sunk ship", () => {
+    const ship = new Ship(1);
+    ship.hit();
+    ship.hit();
+    expect(ship.hits).toBe(1);
+    expect(ship.isSunk()).toBe(true);
+});
