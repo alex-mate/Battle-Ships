@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#f3f1e9">
+        <meta name="description" content="Deploy your fleet and take command in a classic game of Battleship against the computer.">
+        <title>
+            Battleship — Naval Strategy
+        </title>
+    </head>
+    <body>
+        <div class="app-shell">
+            <header class="topbar">
+                <a class="brand" href="./" aria-label="Battleship home">
+                    <svg class="brand-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                        <circle cx="20" cy="8" r="4"/>
+                        </circle>
+                        <path d="M20 12v21M12 17h16M5 24c0 8 8 11 15 11s15-3 15-11M5 24l-2 6m2-6 6 2m24-2 2 6m-2-6-6 2"/>
+                        </path>
+                    </svg>
+                    <span>
+                        BATTLESHIP
+                        <span class="brand-subtitle">
+                            THE NAVAL STRATEGY GAME
+                        </span>
+                    </span>
+                </a>
+                <button id="new-game" class="button button--secondary" type="button">
+                    ↺
+                    <span>
+                        New game
+                    </span>
+                </button>
+            </header>
+            <main>
+                <section class="intro">
+                    <div>
+                        <p class="eyebrow">
+                            OUTTHINK. OUTMANEUVER. OUTLAST.
+                        </p>
+                        <h1>
+                            Every move makes waves.
+                        </h1>
+                        <p class="intro-description">
+                            Two fleets. One ocean. Take command and sink the opposition.
+                        </p>
+                    </div>
+                    <div class="match-info">
+                        <span class="status-dot">
+                        </span>
+                        YOU VS. COMPUTER
+                        <span class="match-rule">
+                            CLASSIC · 10 × 10
+                        </span>
+                    </div>
+                </section>
+                <section class="status-panel" aria-label="Game status">
+                    <span class="status-number" aria-hidden="true">
+                        ⌁
+                    </span>
+                    <div class="status-copy">
+                        <p id="status-label" class="eyebrow">
+                            DEPLOYMENT
+                        </p>
+                        <p id="game-message" role="status" aria-live="polite" aria-atomic="true">
+                        </p>
+                    </div>
+                    <div class="shot-stat">
+                        <span id="shot-count">
+                            00
+                        </span>
+                        <small>
+                            SHOTS FIRED
+                        </small>
+                    </div>
+                </section>
+                <section class="deployment-panel" aria-labelledby="deployment-title">
+                    <div class="section-heading">
+                        <div class="deployment-heading">
+                            <h2 id="deployment-title">
+                                Position your fleet
+                            </h2>
+                            <span id="fleet-count">
+                                0 / 5 deployed
+                            </span>
+                        </div>
+                        <p>
+                            Select a ship, then a square. Use rotate to change direction.
+                        </p>
+                    </div>
+                    <div class="deployment-body">
+                        <div id="ship-controls" class="ship-controls">
+                            <button class="ship-card" type="button" data-ship-name="Carrier" data-ship-length="5">
+                                <span class="ship-card__top">
+                                    <span>
+                                        Carrier
+                                    </span>
+                                    <span class="ship-length">
+                                        01
+                                    </span>
+                                </span>
+                                <span class="ship-shape" aria-hidden="true" style="--length:5">
+                                </span>
+                                <small>
+                                    5 spaces
+                                </small>
+                            </button>
+                            <button class="ship-card" type="button" data-ship-name="Battleship" data-ship-length="4">
+                                <span class="ship-card__top">
+                                    <span>
+                                        Battleship
+                                    </span>
+                                    <span class="ship-length">
+                                        02
+                                    </span>
+                                </span>
+                                <span class="ship-shape" aria-hidden="true" style="--length:4">
+                                </span>
+                                <small>
+                                    4 spaces
+                                </small>
+                            </button>
+                            <button class="ship-card" type="button" data-ship-name="Destroyer" data-ship-length="3">
+                                <span class="ship-card__top">
+                                    <span>
+                                        Destroyer
+                                    </span>
+                                    <span class="ship-length">
+                                        03
+                                    </span>
+                                </span>
+                                <span class="ship-shape" aria-hidden="true" style="--length:3">
+                                </span>
+                                <small>
+                                    3 spaces
+                                </small>
+                            </button>
+                            <button class="ship-card" type="button" data-ship-name="Submarine" data-ship-length="3">
+                                <span class="ship-card__top">
+                                    <span>
+                                        Submarine
+                                    </span>
+                                    <span class="ship-length">
+                                        04
+                                    </span>
+                                </span>
+                                <span class="ship-shape" aria-hidden="true" style="--length:3">
+                                </span>
+                                <small>
+                                    3 spaces
+                                </small>
+                            </button>
+                            <button class="ship-card" type="button" data-ship-name="Patrol Boat" data-ship-length="2">
+                                <span class="ship-card__top">
+                                    <span>
+                                        Patrol Boat
+                                    </span>
+                                    <span class="ship-length">
+                                        05
+                                    </span>
+                                </span>
+                                <span class="ship-shape" aria-hidden="true" style="--length:2">
+                                </span>
+                                <small>
+                                    2 spaces
+                                </small>
+                            </button>
+                        </div>
+                        <div class="game-controls">
+                            <div class="placement-actions">
+                                <button id="rotate-ship" class="button button--secondary" type="button">
+                                    ↻ Horizontal
+                                </button>
+                                <button id="place-ships" class="button button--secondary" type="button">
+                                    Shuffle fleet
+                                </button>
+                            </div>
+                            <button id="start-game" class="button button--primary" type="button" disabled>
+                                Start battle
+                                <span aria-hidden="true">
+                                    →
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <section class="battlefield" aria-label="Battlefield">
+                    <article class="board-panel board-panel--player">
+                        <div class="board-header">
+                            <div>
+                                <p class="eyebrow">
+                                    01 / DEFEND
+                                </p>
+                                <h2>
+                                    Your ocean
+                                </h2>
+                            </div>
+                            <span id="player-remaining" class="board-meta">
+                                5 ships afloat
+                            </span>
+                        </div>
+                        <div class="chart">
+                            <div class="axis axis--columns" aria-hidden="true">
+                                <span>
+                                    1
+                                </span>
+                                <span>
+                                    2
+                                </span>
+                                <span>
+                                    3
+                                </span>
+                                <span>
+                                    4
+                                </span>
+                                <span>
+                                    5
+                                </span>
+                                <span>
+                                    6
+                                </span>
+                                <span>
+                                    7
+                                </span>
+                                <span>
+                                    8
+                                </span>
+                                <span>
+                                    9
+                                </span>
+                                <span>
+                                    10
+                                </span>
+                            </div>
+                            <div class="axis axis--rows" aria-hidden="true">
+                                <span>
+                                    A
+                                </span>
+                                <span>
+                                    B
+                                </span>
+                                <span>
+                                    C
+                                </span>
+                                <span>
+                                    D
+                                </span>
+                                <span>
+                                    E
+                                </span>
+                                <span>
+                                    F
+                                </span>
+                                <span>
+                                    G
+                                </span>
+                                <span>
+                                    H
+                                </span>
+                                <span>
+                                    I
+                                </span>
+                                <span>
+                                    J
+                                </span>
+                            </div>
+                            <div id="player-board" class="board board--player" role="group" aria-label="Your ocean. Use arrow keys to navigate; Enter to select.">
+                            </div>
+                        </div>
+                        <div class="board-caption">
+                            <span>
+                                HOME TERRITORY
+                            </span>
+                            <span>
+                                Your ships are visible
+                            </span>
+                        </div>
+                    </article>
+                    <article class="board-panel board-panel--computer">
+                        <div class="board-header">
+                            <div>
+                                <p class="eyebrow">
+                                    02 / ATTACK
+                                </p>
+                                <h2>
+                                    Enemy waters
+                                </h2>
+                            </div>
+                            <span id="enemy-remaining" class="board-meta">
+                                5 ships afloat
+                            </span>
+                        </div>
+                        <div class="chart">
+                            <div class="axis axis--columns" aria-hidden="true">
+                                <span>
+                                    1
+                                </span>
+                                <span>
+                                    2
+                                </span>
+                                <span>
+                                    3
+                                </span>
+                                <span>
+                                    4
+                                </span>
+                                <span>
+                                    5
+                                </span>
+                                <span>
+                                    6
+                                </span>
+                                <span>
+                                    7
+                                </span>
+                                <span>
+                                    8
+                                </span>
+                                <span>
+                                    9
+                                </span>
+                                <span>
+                                    10
+                                </span>
+                            </div>
+                            <div class="axis axis--rows" aria-hidden="true">
+                                <span>
+                                    A
+                                </span>
+                                <span>
+                                    B
+                                </span>
+                                <span>
+                                    C
+                                </span>
+                                <span>
+                                    D
+                                </span>
+                                <span>
+                                    E
+                                </span>
+                                <span>
+                                    F
+                                </span>
+                                <span>
+                                    G
+                                </span>
+                                <span>
+                                    H
+                                </span>
+                                <span>
+                                    I
+                                </span>
+                                <span>
+                                    J
+                                </span>
+                            </div>
+                            <div id="computer-board" class="board board--computer" role="group" aria-label="Enemy waters. Use arrow keys to navigate; Enter to select.">
+                            </div>
+                        </div>
+                        <div class="board-caption">
+                            <span>
+                                UNCHARTED TERRITORY
+                            </span>
+                            <span>
+                                Find and sink all five ships
+                            </span>
+                        </div>
+                    </article>
+                </section>
+                <div class="below-boards">
+                    <p class="keyboard-hint">
+                        Arrow keys to navigate · Enter to select
+                    </p>
+                    <div class="legend" aria-label="Map legend">
+                        <span>
+                            <i class="legend-marker legend-marker--ship">
+                            </i>
+                            Ship
+                        </span>
+                        <span>
+                            <i class="legend-marker legend-marker--hit">
+                            </i>
+                            Hit
+                        </span>
+                        <span>
+                            <i class="legend-marker legend-marker--miss">
+                            </i>
+                            Miss
+                        </span>
+                        <span>
+                            <i class="legend-marker legend-marker--sunk">
+                            </i>
+                            Sunk
+                        </span>
+                    </div>
+                </div>
+            </main>
+            <footer>
+                <span>
+                    BATTLESHIP
+                    <span class="footer-divider">
+                        /
+                    </span>
+                    A game of calculated guesses.
+                </span>
+                <span>
+                    FIVE SHIPS. NO SECOND CHANCES.
+                </span>
+            </footer>
+        </div>
+    </body>
+</html>
